@@ -116,8 +116,10 @@ fn display_val_expression<R>(target_reg: gimli::Register, exp: gimli::Expression
                     stack.pop();
                 }
                 gimli::Operation::Pick { index } => {
-                    let val: Val = stack.get(stack.len() - 1 - index as usize).unwrap().clone();
-                    stack.push(val);
+                    let val1 = stack.get(stack.len() - 1 - index as usize).unwrap();
+                    let new_val = val_generator.next();
+                    writeln!(w, "    uint64_t {}={};", new_val, val1)?;
+                    stack.push(new_val);
                 }
                 gimli::Operation::Swap => {
                     let val1 = stack.pop().unwrap();
